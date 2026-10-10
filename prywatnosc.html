@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+    <meta name="referrer" content="no-referrer">
+    <meta name="color-scheme" content="dark">
+    <title>Polityka prywatności – Kropka</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='none' stroke='%23ff2d87' stroke-width='2'/%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23ff2d87'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="logo" href="./"><span class="logo-mark"></span>kropka</a>
+    </header>
+    <main class="container legal">
+        <h1>Polityka prywatności</h1>
+        <p class="legal-date">Obowiązuje od 10 października 2026 r.</p>
+
+        <h2>1. Kto przetwarza dane</h2>
+        <p>Administratorem danych jest autor bota Kropka, <strong>czerwony</strong> (kontakt w punkcie 9). Polityka dotyczy bota na Discordzie oraz panelu pod adresem <a href="https://kropka.czerw.dev">kropka.czerw.dev</a>. Zbieramy tylko to, czego bot potrzebuje do działania. Danych nie sprzedajemy, nie wyświetlamy reklam i nie używamy trackerów ani analityki.</p>
+
+        <h2>2. Jakie dane zbiera bot</h2>
+        <p>To, co jest zapisywane, zależy od modułów włączonych przez administratorów serwera:</p>
+        <ul>
+            <li><strong>Identyfikatory Discorda</strong>: ID użytkowników, serwerów, kanałów, ról i wiadomości. Bez nich bot nie wie, do kogo i do czego odnoszą się dane.</li>
+            <li><strong>Ustawienia serwera</strong> zapisane przez administratorów, np. kanały, role, treści powitań, autoodpowiedzi i własne komendy.</li>
+            <li><strong>Statystyki i postęp</strong>: punkty doświadczenia i poziomy, liczba wiadomości, czas na kanałach głosowych, reputacja, saldo i przedmioty w ekonomii wraz z historią transakcji.</li>
+            <li><strong>Moderacja</strong>: kary (ostrzeżenia, wyciszenia, bany) z powodem, moderatorem i datą, a także zapis weryfikacji nowych osób.</li>
+            <li><strong>Dołączenia</strong>: kiedy ktoś wszedł na serwer lub z niego wyszedł i z którego zaproszenia skorzystał.</li>
+            <li><strong>Treści, które sam podajesz botowi</strong>: przypomnienia, propozycje, głosy w ankietach i konkursach, zgłoszenia (tickety).</li>
+        </ul>
+
+        <h2>3. Treść wiadomości</h2>
+        <p>Bot czyta wiadomości na bieżąco, żeby działały automoderacja, autoodpowiedzi, własne komendy i naliczanie doświadczenia. Treści wiadomości nie zapisujemy w bazie, z tymi wyjątkami:</p>
+        <ul>
+            <li>Ostatnie usunięte wiadomości na kanale (komenda <code>/snipe</code>) są trzymane wyłącznie w pamięci bota: najwyżej 5 na kanał, maksymalnie przez godzinę lub do restartu.</li>
+            <li>Jeśli serwer ma włączone logi, bot wysyła informacje o edytowanych i usuniętych wiadomościach na kanał logów wskazany przez administratorów. Zapis rozmowy w zamkniętym zgłoszeniu trafia na kanał wskazany przez administratorów, a jeśli serwer to włączył, także do autora zgłoszenia. Te dane są wtedy przechowywane na Discordzie, a nie u nas.</li>
+        </ul>
+
+        <h2>4. Panel i logowanie</h2>
+        <p>Przy logowaniu przez Discord prosimy tylko o zakresy <code>identify</code> (Twoje ID, nazwa i awatar) oraz <code>guilds</code> (lista Twoich serwerów i uprawnień na nich). Nie widzimy Twojego e-maila ani hasła. Sesja jest przechowywana w pamięci serwera najwyżej przez 24 godziny i nie jest zapisywana na dysku. Token sesji zostaje w Twojej przeglądarce (localStorage), dopóki się nie wylogujesz. Panel nie używa ciasteczek.</p>
+
+        <h2>5. Gdzie są przechowywane dane</h2>
+        <ul>
+            <li><strong>Serwer autora</strong>, na którym działa bot: główna baza danych.</li>
+            <li><strong>Google Firebase (Firestore)</strong>: zaszyfrowana w transmisji kopia zapasowa ustawień i bazy, używana tylko do odtworzenia danych po awarii.</li>
+            <li><strong>Cloudflare</strong>: pośredniczy w ruchu między panelem a botem i chroni go przed atakami.</li>
+            <li><strong>GitHub Pages</strong>: hostuje stronę panelu. Ani Cloudflare, ani GitHub nie dostają danych z bazy, ale jak każdy hosting mogą technicznie widzieć adres IP odwiedzających.</li>
+            <li><strong>Discord</strong>: wszystko, co bot publikuje na serwerach, podlega <a href="https://discord.com/privacy" rel="noopener noreferrer">polityce prywatności Discorda</a>.</li>
+        </ul>
+
+        <h2>6. Jak długo przechowujemy dane</h2>
+        <p>Dane serwera trzymamy, dopóki bot jest na tym serwerze. Część danych usuwa się sama: statystyki kanałów po pewnym czasie, sesje panelu po 24 godzinach, a pamięć <code>/snipe</code> po godzinie. Administratorzy mogą w panelu zerować poziomy, ekonomię i statystyki. Po usunięciu bota z serwera możesz poprosić o skasowanie wszystkich jego danych, także z kopii zapasowej.</p>
+
+        <h2>7. Podstawa prawna</h2>
+        <p>Dane przetwarzamy, bo są potrzebne do działania funkcji, z których korzystasz lub które włączył Twój serwer (art. 6 ust. 1 lit. b i f RODO, czyli wykonanie usługi i prawnie uzasadniony interes w zapewnieniu działania i bezpieczeństwa bota).</p>
+
+        <h2>8. Twoje prawa</h2>
+        <p>Masz prawo do dostępu do swoich danych, ich sprostowania i usunięcia, ograniczenia przetwarzania, przeniesienia danych oraz sprzeciwu. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych (<a href="https://uodo.gov.pl" rel="noopener noreferrer">uodo.gov.pl</a>). Żeby skorzystać z tych praw, napisz do nas i podaj swoje ID z Discorda. Odpowiemy w ciągu 30 dni.</p>
+        <p>Z bota nie powinny korzystać osoby młodsze, niż pozwala na to Discord.</p>
+
+        <h2>9. Kontakt i zmiany</h2>
+        <p>Kontakt: <strong>czerwony</strong> na Discordzie albo zgłoszenie na <a href="https://github.com/czerwonn/kropka-panel/issues" rel="noopener noreferrer">GitHubie</a>. O istotnych zmianach tej polityki informuje data na górze strony. Zobacz też <a href="regulamin.html">regulamin</a>.</p>
+    </main>
+    <footer class="footer">
+        <div class="footer-inner">
+            <a class="logo" href="./"><span class="logo-mark"></span>kropka</a>
+            <a href="regulamin.html">Regulamin</a>
+            <a href="prywatnosc.html">Prywatność</a>
+            <span class="spacer"></span>
+            <span>Nie jest powiązany z Discord Inc.</span>
+        </div>
+    </footer>
+</body>
+</html>

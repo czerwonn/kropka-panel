@@ -843,3 +843,15 @@ input[type=range] { width: 100%; accent-color: var(--pink); }
     .cmd-row { grid-template-columns: 1fr auto; }
     .cmd-row .muted { display: none; }
 }
+
+/* ---------- regulamin / polityka prywatności ---------- */
+.footer-inner a:not(.logo) { color: var(--text-3); }
+.footer-inner a:not(.logo):hover { color: var(--text); }
+.legal { max-width: 820px; line-height: 1.7; color: var(--text-2); font-size: 15px; }
+.legal h1 { font-family: var(--display); font-size: clamp(32px, 6vw, 46px); text-transform: uppercase; color: var(--text); margin: 0 0 6px; }
+.legal h2 { font-family: var(--display); font-size: 21px; text-transform: uppercase; letter-spacing: .02em; color: var(--text); margin: 34px 0 8px; }
+.legal-date { color: var(--pink); margin: 0 0 18px; }
+.legal strong { color: var(--text); }
+.legal ul { padding-left: 20px; }
+.legal li { margin: 6px 0; }
+.legal code { font-family: var(--mono); font-size: 13px; background: var(--surface-2); padding: 1px 6px; border-radius: var(--radius); }
