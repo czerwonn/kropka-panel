@@ -278,7 +278,7 @@ function switchInput(checked, onChange, label) {
     const input = h('input', { type: 'checkbox', checked, onchange: e => onChange(e.target.checked) });
     return h('label', { class: 'switch-row' },
         h('span', { class: 'switch' }, input, h('span', { class: 'slider' })),
-        label && h('span', null, label));
+        label && h('span', { class: 'switch-label' }, label));
 }
 
 // Wybór wielu pozycji: kafelki + lista do dodawania
@@ -908,7 +908,7 @@ async function renderModulePage(content, data, guildId, mod) {
     }, config.enabled ? 'Włączony' : 'Wyłączony');
     // podpis przełącznika nadąża za stanem
     toggle?.querySelector('input').addEventListener('change', e => {
-        toggle.querySelector('span:last-child').textContent = e.target.checked ? 'Włączony' : 'Wyłączony';
+        toggle.querySelector('.switch-label').textContent = e.target.checked ? 'Włączony' : 'Wyłączony';
     });
 
     content.append(
