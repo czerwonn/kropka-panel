@@ -296,6 +296,162 @@ function switchInput(checked, onChange, label) {
         label && h('span', { class: 'switch-label' }, label));
 }
 
+// ---------------------------------------------------------------- własne listy rozwijane
+// Każdy <select class="input"> w panelu (też w modułach) dostaje własny wygląd: przycisk + szklane menu.
+// Oryginalny <select> zostaje ukryty w środku - kod dalej czyta .value i słucha 'change',
+// więc żaden moduł nie musi o tym wiedzieć.
+
+let openMenu = null; // { menu, close }
+
+function enhanceSelect(select) {
+    if (select.multiple || select.parentElement?.classList.contains('dd')) return;
+    const valueEl = h('span', { class: 'dd-value' });
+    const button = h('button', { type: 'button', class: 'dd-button', 'aria-haspopup': 'listbox', 'aria-expanded': 'false' },
+        valueEl, h('span', { class: 'dd-arrow', 'aria-hidden': 'true' }));
+    const wrap = h('div', { class: `dd${select.classList.contains('chips-add') ? ' dd-inline' : ''}` });
+    if (select.style.cssText) wrap.style.cssText = select.style.cssText;
+    select.before(wrap);
+    wrap.append(button, select);
+
+    const sync = () => {
+        const opt = select.options[select.selectedIndex];
+        valueEl.textContent = opt?.textContent ?? '';
+        wrap.classList.toggle('is-empty', !opt || opt.value === '');
+        button.disabled = select.disabled;
+        button.title = opt?.textContent ?? '';
+    };
+    // Wartość ustawiona w kodzie (select.value = ...) też ma się pokazać
+    for (const prop of ['value', 'selectedIndex']) {
+        const d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, prop);
+        Object.defineProperty(select, prop, { configurable: true, get() { return d.get.call(this); }, set(v) { d.set.call(this, v); sync(); } });
+    }
+    select.addEventListener('change', sync);
+    new MutationObserver(sync).observe(select, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'label'] });
+    sync();
+
+    const choose = opt => {
+        select.value = opt.value;
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        closeMenu();
+        button.focus();
+    };
+
+    function open() {
+        if (button.disabled) return;
+        closeMenu();
+        const items = [];
+        const list = h('div', { class: 'dd-list', role: 'listbox' });
+        const addOption = opt => {
+            if (opt.hidden) return;
+            const item = h('div', {
+                class: `dd-item${opt.selected && opt.value !== '' ? ' selected' : ''}${opt.disabled ? ' disabled' : ''}`,
+                role: 'option', 'aria-selected': String(opt.selected), 'aria-disabled': String(opt.disabled),
+                onmousedown: e => e.preventDefault(),
+                onclick: () => { if (!opt.disabled) choose(opt); },
+            }, opt.textContent);
+            item.addEventListener('mousemove', () => setActive(items.indexOf(item)));
+            item._opt = opt;
+            items.push(item);
+            list.append(item);
+        };
+        for (const child of select.children) {
+            if (child.tagName === 'OPTGROUP') {
+                list.append(h('div', { class: 'dd-group' }, child.label));
+                [...child.children].forEach(addOption);
+            } else addOption(child);
+        }
+        let active = -1;
+        const usable = () => items.filter(i => !i.hidden && !i._opt.disabled);
+        function setActive(i) {
+            items[active]?.classList.remove('active');
+            active = i;
+            const item = items[active];
+            if (item) { item.classList.add('active'); item.scrollIntoView({ block: 'nearest' }); }
+        }
+        const move = dir => {
+            const list = usable();
+            if (!list.length) return;
+            const at = list.indexOf(items[active]);
+            setActive(items.indexOf(list[(at + dir + list.length) % list.length] ?? list[0]));
+        };
+
+        const search = items.length > 8 ? h('input', { class: 'dd-search', placeholder: 'Szukaj…', 'aria-label': 'Szukaj' }) : null;
+        search?.addEventListener('input', () => {
+            const q = search.value.trim().toLowerCase();
+            for (const item of items) item.hidden = q !== '' && !item.textContent.toLowerCase().includes(q);
+            for (const g of list.querySelectorAll('.dd-group')) {
+                let next = g.nextElementSibling, any = false;
+                while (next && !next.classList.contains('dd-group')) { if (!next.hidden) any = true; next = next.nextElementSibling; }
+                g.hidden = !any;
+            }
+            setActive(items.indexOf(usable()[0]));
+        });
+
+        const menu = h('div', { class: 'dd-menu' }, search, list);
+        menu.addEventListener('keydown', e => {
+            if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+            else if (e.key === 'Enter') { e.preventDefault(); const item = items[active]; if (item && !item.hidden && !item._opt.disabled) choose(item._opt); }
+            else if (e.key === 'Escape' || e.key === 'Tab') { closeMenu(); button.focus(); }
+        });
+        document.body.append(menu);
+
+        // Pod przyciskiem, a gdy brak miejsca - nad nim
+        const r = button.getBoundingClientRect();
+        const below = innerHeight - r.bottom - 12;
+        const above = r.top - 12;
+        const up = below < 220 && above > below;
+        menu.style.left = `${Math.max(8, Math.min(r.left, innerWidth - Math.max(r.width, 220) - 8))}px`;
+        menu.style.width = `${Math.max(r.width, 220)}px`;
+        menu.style.maxHeight = `${Math.min(340, up ? above : below)}px`;
+        if (up) menu.style.bottom = `${innerHeight - r.top + 6}px`;
+        else menu.style.top = `${r.bottom + 6}px`;
+        menu.classList.toggle('up', up);
+
+        wrap.classList.add('open');
+        button.setAttribute('aria-expanded', 'true');
+        openMenu = {
+            menu,
+            close() {
+                menu.remove();
+                wrap.classList.remove('open');
+                button.setAttribute('aria-expanded', 'false');
+            },
+        };
+        const current = items.find(i => i._opt.selected && !i._opt.disabled);
+        setActive(current ? items.indexOf(current) : items.indexOf(usable()[0]));
+        (search ?? menu).focus?.();
+        if (!search) { menu.tabIndex = -1; menu.focus(); }
+    }
+
+    button.addEventListener('click', () => (wrap.classList.contains('open') ? closeMenu() : open()));
+    button.addEventListener('keydown', e => {
+        if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); open(); }
+    });
+}
+
+function closeMenu() {
+    openMenu?.close();
+    openMenu = null;
+}
+
+function initDropdowns() {
+    if (typeof MutationObserver === 'undefined' || typeof HTMLSelectElement === 'undefined') return;
+    const scan = node => {
+        if (node.nodeType !== 1) return;
+        if (node.matches('select.input')) enhanceSelect(node);
+        node.querySelectorAll('select.input').forEach(enhanceSelect);
+    };
+    new MutationObserver(muts => { for (const m of muts) m.addedNodes.forEach(scan); }).observe(document.body, { childList: true, subtree: true });
+    scan(document.body);
+    document.addEventListener('mousedown', e => { if (openMenu && !openMenu.menu.contains(e.target) && !e.target.closest?.('.dd.open')) closeMenu(); });
+    // przewinięcie strony (ale nie samego menu) albo zmiana rozmiaru - menu by odjechało, zamykamy
+    document.addEventListener('scroll', e => { if (openMenu && !openMenu.menu.contains(e.target)) closeMenu(); }, true);
+    window.addEventListener('resize', closeMenu);
+    window.addEventListener('hashchange', closeMenu);
+}
+
 // Wybór wielu pozycji: kafelki + lista do dodawania
 function chipsPicker({ options, values, onChange, placeholder = '+ Dodaj…', max = 25 }) {
     let current = [...values];
@@ -464,7 +620,7 @@ function listEditor(f, items, onChange, ctx) {
                     h('button', { type: 'button', class: 'btn btn-icon btn-danger', title: 'Usuń', onclick: () => { current.splice(i, 1); emit(); draw(); } }, '✕')))),
             ...(current.length === 0 ? [h('div', { class: 'empty', style: { padding: '14px' } }, 'Brak pozycji.')] : []),
             h('button', {
-                type: 'button', class: 'btn btn-sm', disabled: current.length >= (f.max ?? 25),
+                type: 'button', class: 'btn btn-sm btn-add', disabled: current.length >= (f.max ?? 25),
                 onclick: () => { current.push(Object.fromEntries(f.item.map(sub => [sub.key, defaultOfField(sub)]))); emit(); draw(); },
             }, `+ ${f.addLabel ?? 'Dodaj'}`));
     }
@@ -941,8 +1097,8 @@ async function renderModulePage(content, data, guildId, mod) {
     const ctx = moduleCtx(mod, data, guildId);
     const config = ctx.config();
 
-    const offBanner = h('div', { class: 'off-banner' },
-        '⛔ Moduł jest wyłączony na tym serwerze - ustawienia możesz zmieniać, ale bot ich nie używa, dopóki go nie włączysz.');
+    const offBanner = h('div', { class: 'off-banner' }, h('span', { class: 'banner-ico', 'aria-hidden': 'true' }, '⛔'),
+        'Moduł jest wyłączony na tym serwerze - ustawienia możesz zmieniać, ale bot ich nie używa, dopóki go nie włączysz.');
     offBanner.hidden = mod.alwaysEnabled || config.enabled;
 
     const toggle = mod.alwaysEnabled ? null : switchInput(Boolean(config.enabled), async on => {
@@ -1055,7 +1211,7 @@ async function renderEvents(content) {
         card('📅', 'Lista eventów', 'To samo co /events, /eventsadd i /eventsremove. Wyszarzone już minęły.',
             table,
             h('div', { class: 'row' },
-                h('button', { class: 'btn', onclick: () => { list.push({ type: 'Community Day', date: '', pokemon: '', move: '', time: '14:00-17:00' }); draw(); } }, '+ Dodaj event'),
+                h('button', { class: 'btn btn-add', onclick: () => { list.push({ type: 'Community Day', date: '', pokemon: '', move: '', time: '14:00-17:00' }); draw(); } }, '+ Dodaj event'),
                 h('div', { style: { flex: '1' } }),
                 saveBtn)),
     );
@@ -1090,6 +1246,7 @@ function renderFatal(message) {
 }
 
 async function boot() {
+    initDropdowns();
     document.body.prepend(h('div', { class: 'page-fx', 'aria-hidden': 'true' },
         h('div', { class: 'hero-nebula' }), h('div', { class: 'hero-beams' }), h('div', { class: 'hero-grid' })));
     // GitHub Pages nie wysyła nagłówka przeciw ramkom - panel nie działa osadzony w cudzej stronie (clickjacking)

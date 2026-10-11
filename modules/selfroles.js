@@ -227,7 +227,7 @@
                         // replaceChildren (inaczej niż h) nie pomija null - stąd tablica
                         ...(draft.roles.length === 0 ? [h('div', { class: 'empty', style: { padding: '14px' } }, 'Brak ról - dodaj pierwszą.')] : []),
                         h('button', {
-                            type: 'button', class: 'btn btn-sm', disabled: draft.roles.length >= 25,
+                            type: 'button', class: 'btn btn-sm btn-add', disabled: draft.roles.length >= 25,
                             onclick: () => { draft.roles.push({ roleId: null, label: '', emoji: '', description: '', style: 'primary' }); drawRoles(); },
                         }, '+ Dodaj rolę'));
                     drawPreview();
@@ -330,7 +330,7 @@
                                 field('Rola', giveRoleSelect(pair.roleId, v => { pair.roleId = v; }))),
                             h('div', { class: 'list-item-actions' }, iconBtn('Usuń', '✕', () => { draft.pairs.splice(i, 1); drawPairs(); }, { danger: true })))),
                         h('button', {
-                            type: 'button', class: 'btn btn-sm', disabled: draft.pairs.length >= 20,
+                            type: 'button', class: 'btn btn-sm btn-add', disabled: draft.pairs.length >= 20,
                             onclick: () => { draft.pairs.push({ emoji: '', roleId: null }); drawPairs(); },
                         }, '+ Dodaj reakcję'));
                 }

@@ -224,7 +224,7 @@
 
                 function addButton(kind, list, max, redraw, label) {
                     return h('button', {
-                        type: 'button', class: 'btn btn-sm', disabled: list.length >= max,
+                        type: 'button', class: 'btn btn-sm btn-add', disabled: list.length >= max,
                         onclick: () => {
                             const specs = specsOf(kind);
                             const first = Object.keys(specs).find(k => specs[k].triggers.includes(draft.trigger) && available(specs[k]));
