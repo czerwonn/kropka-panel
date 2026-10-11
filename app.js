@@ -41,6 +41,21 @@ function h(tag, props, ...children) {
     return el;
 }
 
+// Logo Discorda (Simple Icons, CC0) jako SVG - bez zewnętrznych plików
+const DISCORD_PATH = 'M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z';
+function discordIcon() {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('class', 'dc-ico');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', DISCORD_PATH);
+    path.setAttribute('fill', 'currentColor');
+    svg.append(path);
+    return svg;
+}
+
 // Linki z danych (np. URL utworu) - tylko http(s)
 function safeUrl(url) {
     try {
@@ -622,10 +637,10 @@ function renderTopbar(active) {
     } else if (state.config) {
         // Na stronie głównej: przewijanie do sekcji (bez zmiany #, którego używa router)
         nav.append(
-            h('button', { onclick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) }, 'Start'),
-            h('button', { onclick: () => document.getElementById('funkcje')?.scrollIntoView({ behavior: 'smooth' }) }, 'Funkcje'),
+            h('button', { class: 'active', 'data-section': 'start', onclick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) }, 'Start'),
+            h('button', { 'data-section': 'funkcje', onclick: () => document.getElementById('funkcje')?.scrollIntoView({ behavior: 'smooth' }) }, 'Funkcje'),
             h('a', { href: inviteUrl(), target: '_blank', rel: 'noopener noreferrer' }, 'Dodaj bota'));
-        right.append(h('a', { class: 'login-chip', href: state.config.loginUrl }, '⇥ Zaloguj'));
+        right.append(h('a', { class: 'login-chip', href: state.config.loginUrl }, discordIcon(), 'Zaloguj'));
     }
 
     $('#topbar').replaceChildren(
@@ -636,6 +651,15 @@ function renderTopbar(active) {
 }
 
 // ---------------------------------------------------------------- landing
+
+// Kreska w menu pod sekcją, którą właśnie widać (Start / Funkcje)
+function updateLandingNav() {
+    const features = document.getElementById('funkcje');
+    if (!features) return;
+    const current = features.getBoundingClientRect().top < window.innerHeight * 0.5 ? 'funkcje' : 'start';
+    for (const b of document.querySelectorAll('.nav [data-section]')) b.classList.toggle('active', b.dataset.section === current);
+}
+window.addEventListener('scroll', updateLandingNav, { passive: true });
 
 function renderLanding(main) {
     renderTopbar();
@@ -648,17 +672,44 @@ function renderLanding(main) {
         ['⚙️', 'Wszystko per serwer', 'Każdy moduł włączasz i ustawiasz osobno dla swojego serwera.'],
     ];
 
+    // Makiety kart panelu wystające zza dolnej krawędzi - zachęta do przewinięcia
+    const mockSwitch = on => h('span', { class: `mock-switch ${on ? 'on' : ''}` });
+    const teaser = h('div', { class: 'hero-teaser', 'aria-hidden': 'true', onclick: () => document.querySelector('.landing-section')?.scrollIntoView({ behavior: 'smooth' }) },
+        h('div', { class: 'mock-card side left' },
+            h('div', { class: 'mock-head' }, h('span', { class: 'mock-dot' }), 'Moduły'),
+            [['⭐ Poziomy', true], ['🛡️ Automod', true], ['🎵 Muzyka', false], ['🎉 Konkursy', true]].map(([name, on]) =>
+                h('div', { class: 'mock-row' }, h('span', null, name), mockSwitch(on)))),
+        h('div', { class: 'mock-card main' },
+            h('div', { class: 'mock-head' }, h('span', { class: 'mock-dot' }), 'Panel serwera'),
+            h('div', { class: 'mock-stats' },
+                h('div', null, h('b', null, '1 284'), h('span', null, 'członków')),
+                h('div', null, h('b', null, '27'), h('span', null, 'modułów')),
+                h('div', null, h('b', null, '42 ms'), h('span', null, 'ping'))),
+            h('div', { class: 'mock-bars' }, [38, 62, 45, 80, 56, 92, 70, 84].map(v => h('span', { style: { '--v': `${v}%` } })))),
+        h('div', { class: 'mock-card side right' },
+            h('div', { class: 'mock-head' }, h('span', { class: 'mock-dot' }), 'Poziomy'),
+            h('div', { class: 'mock-level' },
+                h('span', { class: 'mock-avatar' }),
+                h('div', null, h('b', null, 'Poziom 12'), h('div', { class: 'mock-progress' }, h('span', null)))),
+            h('div', { class: 'mock-line' }), h('div', { class: 'mock-line short' })));
+
     const hero = h('section', { class: 'hero' },
+        h('div', { class: 'hero-nebula', 'aria-hidden': 'true' }),
+        h('div', { class: 'hero-beams', 'aria-hidden': 'true' }),
+        h('div', { class: 'hero-grid', 'aria-hidden': 'true' }),
         h('div', { class: 'hero-ring r1', 'aria-hidden': 'true' }),
         h('div', { class: 'hero-ring r2', 'aria-hidden': 'true' }),
         h('div', { class: 'hero-ring r3', 'aria-hidden': 'true' }),
         h('div', { class: 'hero-inner' },
             h('div', { class: 'hero-eyebrow' }, 'To jest'),
-            h('h1', { class: 'hero-title' }, 'Kropka'),
+            h('h1', { class: 'hero-title' },
+                h('span', { class: 'hero-dot', 'aria-hidden': 'true' }),
+                h('span', { class: 'hero-word' }, 'Kropka')),
             h('p', null, 'Bot do wszystkiego: poziomy, ekonomia, moderacja, muzyka i konkursy - a to jego panel. Zaproś go i ustaw wszystko bez wpisywania komend.'),
             h('div', { class: 'hero-actions' },
-                h('a', { class: 'btn btn-primary btn-lg', href: state.config.loginUrl }, 'Zaloguj przez Discord ⇥'),
-                h('a', { class: 'btn btn-lg', ...invite }, '+ Dodaj bota'))));
+                h('a', { class: 'btn btn-lg btn-gradient', href: state.config.loginUrl }, discordIcon(), 'Zaloguj przez Discord'),
+                h('a', { class: 'btn btn-lg btn-glass', ...invite }, '+ Dodaj bota'))),
+        teaser);
     const heroImage = window.KROPKA_CONFIG?.heroImage;
     if (heroImage) hero.style.setProperty('--hero-img', `url(${JSON.stringify(String(heroImage))})`);
 
