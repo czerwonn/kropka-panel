@@ -366,7 +366,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     left: 0;
     right: 0;
     bottom: 0;
-    height: 12%;
+    height: 24%;
     z-index: 1;
     background: linear-gradient(transparent, var(--bg));
     pointer-events: none;
@@ -486,8 +486,6 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     transform: translateX(-50%) perspective(1200px) rotateX(14deg);
     transform-origin: 50% 100%;
     cursor: pointer;
-    -webkit-mask-image: linear-gradient(#000 55%, transparent 95%);
-    mask-image: linear-gradient(#000 55%, transparent 95%);
 }
 .mock-card {
     padding: 16px 18px 26px;
@@ -495,7 +493,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     background: linear-gradient(180deg, rgba(27, 29, 57, 0.92), rgba(18, 19, 41, 0.92));
     border: 1px solid rgba(255, 45, 135, 0.28);
     border-radius: 14px;
-    box-shadow: 0 -10px 50px -10px rgba(255, 45, 135, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    box-shadow: 0 0 45px rgba(255, 45, 135, 0.22), 0 18px 40px rgba(0, 0, 0, 0.55);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     transition: transform 0.3s;
