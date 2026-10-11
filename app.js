@@ -619,7 +619,7 @@ function renderTopbar(active) {
         if (state.me.isOwner) nav.append(h('a', { href: '#/bot', class: active === 'bot' ? 'active' : '' }, 'Bot'));
 
         right.append(
-            h('span', { class: 'pill ping', title: 'Opóźnienie bota' }, h('span', { class: 'dot' }), `${state.me.bot.ping} ms`),
+            h('span', { class: 'pill ping', title: 'Opóźnienie bota' }, h('span', { class: 'dot' }), h('span', { class: 'ping-label' }, 'online'), `${state.me.bot.ping} ms`),
             h('span', { class: 'user-chip' },
                 h('img', { src: avatarUrl(state.me.user.id, state.me.user.avatar), alt: '' }),
                 h('span', null, state.me.user.username)),
@@ -703,8 +703,8 @@ function renderLanding(main) {
         h('div', { class: 'hero-inner' },
             h('div', { class: 'hero-eyebrow' }, 'To jest'),
             h('h1', { class: 'hero-title' },
-                h('span', { class: 'hero-dot', 'aria-hidden': 'true' }),
-                h('span', { class: 'hero-word' }, 'Kropka')),
+                h('span', { class: 'hero-word' }, 'Kropka'),
+                h('span', { class: 'hero-dot', 'aria-hidden': 'true' })),
             h('p', null, 'Bot do wszystkiego: poziomy, ekonomia, moderacja, muzyka i konkursy - a to jego panel. Zaproś go i ustaw wszystko bez wpisywania komend.'),
             h('div', { class: 'hero-actions' },
                 h('a', { class: 'btn btn-lg btn-gradient', href: state.config.loginUrl }, discordIcon(), 'Zaloguj przez Discord'),
@@ -753,7 +753,7 @@ async function renderGuildList(main, refresh = false) {
     }
 
     const withBot = state.guilds.filter(g => g.botPresent);
-    const refreshBtn = h('button', { class: 'btn btn-sm', onclick: () => renderGuildList(main, true) }, '↻ Odśwież');
+    const refreshBtn = h('button', { class: 'btn btn-sm btn-glass', onclick: () => renderGuildList(main, true) }, '↻ Odśwież');
 
     main.replaceChildren(
         h('div', { class: 'page-hero' },
@@ -768,14 +768,14 @@ async function renderGuildList(main, refresh = false) {
                 h('div', { class: 'guild-card-art' },
                     guildIconUrl(g) && h('img', { class: 'blur', src: guildIconUrl(g), alt: '' }),
                     guildIcon(g, 'lg'),
-                    h('span', { class: `ribbon ${g.botPresent ? '' : 'off'}` }, g.botPresent ? '● Aktywny' : 'Brak bota')),
+                    h('span', { class: `ribbon ${g.botPresent ? '' : 'off'}` }, h('span', { class: 'ribbon-dot' }), g.botPresent ? 'Aktywny' : 'Brak bota')),
                 h('div', { class: 'guild-card-body' },
                     h('div', { class: 'name', title: g.name }, g.name),
                     h('div', { class: 'sub' }, g.botPresent ? 'Bot jest na serwerze' : 'Dodaj bota, żeby nim zarządzać'),
                     g.botPresent
-                        ? h('a', { class: 'btn btn-primary btn-sm', href: `#/g/${g.id}` }, 'Zarządzaj ▸')
+                        ? h('a', { class: 'btn btn-gradient btn-sm', href: `#/g/${g.id}` }, 'Zarządzaj ▸')
                         : h('a', {
-                            class: 'btn btn-sm',
+                            class: 'btn btn-sm btn-outline',
                             href: inviteUrl(g.id),
                             target: '_blank',
                             rel: 'noopener noreferrer',
@@ -1090,6 +1090,8 @@ function renderFatal(message) {
 }
 
 async function boot() {
+    document.body.prepend(h('div', { class: 'page-fx', 'aria-hidden': 'true' },
+        h('div', { class: 'hero-nebula' }), h('div', { class: 'hero-beams' }), h('div', { class: 'hero-grid' })));
     // GitHub Pages nie wysyła nagłówka przeciw ramkom - panel nie działa osadzony w cudzej stronie (clickjacking)
     if (window.top !== window.self) {
         document.body.replaceChildren(h('p', { style: { padding: '20px' } }, 'Panel Kropki otwórz bezpośrednio: ', h('a', { href: location.href, target: '_top', rel: 'noopener' }, location.host)));

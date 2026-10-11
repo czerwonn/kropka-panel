@@ -405,7 +405,7 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.3em;
+    gap: 0.14em;
     margin: 18px 0 8px;
     font: 700 clamp(64px, 14vw, 170px)/0.95 var(--display);
     letter-spacing: 0.04em;
@@ -433,8 +433,10 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
 }
 /* kropka z logo - pulsuje */
 .hero-dot {
-    width: 0.4em;
-    height: 0.4em;
+    align-self: flex-end;
+    width: 0.3em;
+    height: 0.3em;
+    margin-bottom: 0.06em;
     flex-shrink: 0;
     border-radius: 50%;
     background: var(--pink);
@@ -480,11 +482,12 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     grid-template-columns: 1fr 1.35fr 1fr;
     align-items: end;
     gap: 22px;
+    padding-top: 40px;
     transform: translateX(-50%) perspective(1200px) rotateX(14deg);
     transform-origin: 50% 100%;
     cursor: pointer;
-    -webkit-mask-image: linear-gradient(#000 50%, transparent 95%);
-    mask-image: linear-gradient(#000 50%, transparent 95%);
+    -webkit-mask-image: linear-gradient(#000 55%, transparent 95%);
+    mask-image: linear-gradient(#000 55%, transparent 95%);
 }
 .mock-card {
     padding: 16px 18px 26px;
@@ -1058,3 +1061,120 @@ input[type=range] { width: 100%; accent-color: var(--pink); }
 .legal ul { padding-left: 20px; }
 .legal li { margin: 6px 0; }
 .legal code { font-family: var(--mono); font-size: 13px; background: var(--surface-2); padding: 1px 6px; border-radius: var(--radius); }
+
+/* ---------- odstęp między literami dodaje pustkę za ostatnią literą - wyrównujemy, żeby tekst był na środku ---------- */
+.btn { padding-left: calc(24px + 0.12em); }
+.btn-lg { padding-left: calc(34px + 0.12em); }
+.btn-sm { padding-left: calc(16px + 0.12em); }
+
+/* ---------- tło po zalogowaniu: ta sama mgławica i siatka co na stronie głównej, przygaszone ---------- */
+.page-fx { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0.55; }
+.page-fx .hero-grid { height: 55%; }
+body:has(#app.landing) .page-fx { display: none; }
+
+/* ---------- górny pasek po zalogowaniu ---------- */
+.nav a.active::after, .nav button.active::after { box-shadow: 0 0 8px var(--pink), 0 0 18px var(--pink-glow); }
+.nav a.active, .nav button.active { text-shadow: 0 0 12px var(--pink-glow); }
+.pill.ping {
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border-color: rgba(46, 230, 166, 0.35);
+    background: rgba(46, 230, 166, 0.06);
+    box-shadow: 0 0 14px rgba(46, 230, 166, 0.12);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--ok);
+}
+.pill.ping .ping-label { color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; }
+.pill.ping .dot { animation: ok-pulse 1.8s ease-out infinite; }
+.user-chip {
+    padding: 4px 14px 4px 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+.user-chip img { border-radius: 50%; box-shadow: 0 0 0 2px var(--pink), 0 0 10px var(--pink-glow); }
+.topbar-right .btn-ghost { border-radius: 999px; }
+
+/* ---------- lista serwerów ---------- */
+.page-hero .kicker { text-shadow: 0 0 10px var(--pink-glow), 0 0 22px rgba(255, 45, 135, 0.35); }
+.guild-grid { gap: 22px; }
+.guild-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(27, 29, 57, 0.62), rgba(15, 16, 36, 0.72));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 14px 40px -18px rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s, opacity 0.25s, filter 0.25s;
+}
+.guild-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 45, 135, 0.7);
+    box-shadow: 0 0 0 1px rgba(255, 45, 135, 0.35), 0 0 26px rgba(255, 45, 135, 0.3), 0 22px 50px -18px rgba(0, 0, 0, 0.9);
+}
+.guild-card-art { background: transparent; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+/* blask z kolorów ikony serwera */
+.guild-card-art .blur { filter: blur(30px) saturate(1.8); opacity: 0.75; transform: scale(1.3); }
+.guild-card-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 70% at 50% 45%, transparent 40%, rgba(12, 13, 29, 0.55));
+    pointer-events: none;
+}
+.guild-card-art .gicon { z-index: 1; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12), 0 0 34px rgba(255, 45, 135, 0.45), 0 12px 30px rgba(0, 0, 0, 0.6); }
+.ribbon {
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    clip-path: none;
+    border-radius: 999px;
+    background: rgba(255, 45, 135, 0.14);
+    border: 1px solid rgba(255, 45, 135, 0.55);
+    box-shadow: 0 0 14px rgba(255, 45, 135, 0.35);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #ffd0e4;
+}
+.ribbon-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 8px var(--pink); animation: dot-blink 1.6s ease-in-out infinite; }
+.ribbon.off { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; color: var(--text-3); }
+.ribbon.off .ribbon-dot { background: var(--text-3); box-shadow: none; animation: none; }
+.guild-card-body { padding: 18px 18px 20px; }
+.guild-card .btn-gradient, .guild-card .btn-outline { border-radius: 10px; }
+/* serwery bez bota - przygaszone */
+.guild-card.inactive { opacity: 0.55; filter: saturate(0.25); }
+.guild-card.inactive:hover { opacity: 0.85; filter: saturate(0.6); border-color: rgba(139, 92, 246, 0.6); box-shadow: 0 0 22px rgba(139, 92, 246, 0.25); }
+.guild-card.inactive .guild-card-art .blur { opacity: 0.35; }
+.guild-card.inactive .gicon { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); }
+/* ciemny przycisk z cienką obwódką, fioletowy po najechaniu */
+.btn-outline {
+    --btn-bg: rgba(12, 13, 29, 0.7);
+    --btn-fg: var(--text-2);
+    clip-path: none;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.btn-outline:hover { filter: none; --btn-fg: #fff; border-color: var(--violet); box-shadow: 0 0 16px rgba(139, 92, 246, 0.45); }
+.btn-sm.btn-glass { border-radius: 10px; }
+.btn-glass:hover { color: #fff; }
+
+@keyframes ok-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 230, 166, 0.7), 0 0 8px var(--ok); }
+    100% { box-shadow: 0 0 0 8px rgba(46, 230, 166, 0), 0 0 8px var(--ok); }
+}
+@keyframes dot-blink { 50% { opacity: 0.45; } }
+
+@media (max-width: 760px) {
+    .user-chip { padding: 3px; }
+    .pill.ping .ping-label { display: none; }
+}
