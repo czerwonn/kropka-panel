@@ -1176,3 +1176,274 @@ body:has(#app.landing) .page-fx { display: none; }
     .user-chip { padding: 3px; }
     .pill.ping .ping-label { display: none; }
 }
+
+/* ======================================================================
+   Strona główna: panel, funkcje, baner, stopka (neon 3D)
+   ====================================================================== */
+
+/* "panelu" świeci jak napis KROPKA */
+.neon {
+    color: #fff6fb;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.5), 0 0 18px rgba(255, 45, 135, 0.9), 0 0 42px rgba(255, 45, 135, 0.6), 0 0 80px rgba(255, 45, 135, 0.35);
+}
+.offer-card {
+    background: linear-gradient(160deg, rgba(27, 29, 57, 0.6), rgba(15, 16, 36, 0.55));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+.offer-card::before { border-radius: 0 0 3px 3px; box-shadow: 0 0 12px var(--pink); }
+/* punktory: świecące kropki */
+.checklist li { align-items: center; }
+.checklist li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--pink);
+    box-shadow: 0 0 6px var(--pink), 0 0 14px var(--pink-glow);
+}
+
+/* Rdzeń: kula z blaskiem, pulsuje i wysyła fale */
+.offer-art::before { border-color: rgba(255, 45, 135, 0.3); }
+.offer-dot {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #fff 0, #ffc2dc 7%, #ff4f9b 26%, #ff2d87 42%, #9b1260 72%, #3d0727 100%);
+    box-shadow:
+        inset -14px -18px 34px rgba(30, 0, 20, 0.65),
+        inset 8px 10px 24px rgba(255, 255, 255, 0.18),
+        0 0 0 10px rgba(255, 45, 135, 0.12),
+        0 0 30px rgba(255, 45, 135, 0.9),
+        0 0 80px rgba(255, 45, 135, 0.55),
+        0 0 160px rgba(139, 92, 246, 0.45);
+    animation: core-pulse 2.6s ease-in-out infinite;
+}
+.offer-dot::before, .offer-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 45, 135, 0.7);
+    box-shadow: 0 0 18px rgba(255, 45, 135, 0.6);
+    animation: core-wave 2.6s ease-out infinite;
+}
+.offer-dot::after { animation-delay: 1.3s; border-color: rgba(139, 92, 246, 0.7); box-shadow: 0 0 18px rgba(139, 92, 246, 0.6); }
+@keyframes core-pulse {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.05); filter: brightness(1.18); }
+}
+@keyframes core-wave {
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(2.2); opacity: 0; }
+}
+
+/* Nagłówki sekcji: linia z miękkim blaskiem */
+.section-title::after, .title-bar::after {
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--violet), var(--pink));
+    box-shadow: 0 0 8px var(--pink), 0 0 22px var(--pink-glow);
+}
+
+/* Kafelki funkcji */
+.features { align-items: stretch; gap: 18px; }
+.feature {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(170deg, rgba(27, 29, 57, 0.6), rgba(15, 16, 36, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.feature:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 45, 135, 0.6);
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3), 0 0 28px rgba(255, 45, 135, 0.28), 0 0 60px rgba(139, 92, 246, 0.22);
+}
+.feature-ico {
+    clip-path: none;
+    border-radius: 16px;
+    background: linear-gradient(140deg, rgba(91, 33, 182, 0.55), rgba(255, 45, 135, 0.35));
+    border: 1px solid rgba(255, 45, 135, 0.55);
+    box-shadow: 0 0 14px rgba(255, 45, 135, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.feature:hover .feature-ico {
+    border-color: #ff8cc0;
+    background: linear-gradient(140deg, rgba(139, 92, 246, 0.7), rgba(255, 45, 135, 0.6));
+    animation: ico-pulse 1.4s ease-in-out infinite;
+}
+@keyframes ico-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 14px rgba(255, 45, 135, 0.4); }
+    50% { transform: scale(1.08); box-shadow: 0 0 26px rgba(255, 45, 135, 0.75); }
+}
+
+/* Baner: ciemny, gradient fiolet -> róż, przesuwające się pasy i błysk */
+.cta-band {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 30px 34px;
+    background: linear-gradient(90deg, rgba(91, 33, 182, 0.55), rgba(255, 45, 135, 0.38) 60%, rgba(255, 45, 135, 0.18)), #0b0c1c;
+    border: 1px solid rgba(255, 45, 135, 0.35);
+    border-left: 0;
+    border-radius: 18px;
+    box-shadow: 0 0 40px -10px rgba(255, 45, 135, 0.45);
+}
+.cta-band::before {
+    content: "";
+    position: absolute;
+    inset: 0 -60px;
+    z-index: -1;
+    background: repeating-linear-gradient(115deg, transparent 0 22px, rgba(255, 255, 255, 0.05) 22px 25px);
+    animation: band-stripes 3s linear infinite;
+}
+.cta-band::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40%;
+    width: 30%;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    animation: band-shine 5s ease-in-out infinite;
+}
+.cta-band .ico { filter: drop-shadow(0 0 12px rgba(255, 45, 135, 0.7)); }
+.cta-band p { color: rgba(245, 245, 252, 0.75); }
+@keyframes band-stripes { to { transform: translateX(53px); } }
+@keyframes band-shine {
+    0%, 55% { left: -40%; }
+    100% { left: 120%; }
+}
+
+/* Stopka */
+.footer { background: rgba(12, 13, 29, 0.85); border-top: 1px solid rgba(139, 92, 246, 0.18); }
+.footer .logo { text-shadow: 0 0 14px rgba(255, 45, 135, 0.45); }
+.footer .logo-mark { box-shadow: inset 0 0 0 4px var(--nav), 0 0 0 2px var(--pink), 0 0 12px var(--pink-glow); }
+.footer-links { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.footer-inner a:not(.logo) { color: var(--text-2); transition: color 0.15s, text-shadow 0.15s; }
+.footer-inner a:not(.logo):hover { color: var(--pink); text-decoration: none; text-shadow: 0 0 10px var(--pink-glow); }
+.footer-note { color: var(--text-3); }
+
+/* ======================================================================
+   Strona serwera: menu boczne, statystyki, moduły
+   ====================================================================== */
+
+/* "online 124 ms" - jeden krój i wysokość, żeby wszystko było w osi */
+.pill.ping { font: 600 11px/1 var(--mono); }
+.pill.ping .ping-label { font: inherit; font-size: inherit; letter-spacing: 0.08em; }
+
+.sidebar {
+    background: linear-gradient(180deg, rgba(27, 29, 57, 0.6), rgba(15, 16, 36, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+.sidebar a { position: relative; border-radius: 10px; }
+.sidebar a.active {
+    background: linear-gradient(90deg, rgba(255, 45, 135, 0.24), rgba(139, 92, 246, 0.08) 70%, transparent);
+    box-shadow: none;
+    text-shadow: 0 0 10px rgba(255, 45, 135, 0.5);
+}
+.sidebar a.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    bottom: 7px;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--pink);
+    box-shadow: 0 0 8px var(--pink), 0 0 18px var(--pink-glow);
+}
+.sb-dot { background: #3a3c63; box-shadow: 0 0 5px rgba(120, 122, 180, 0.35); }
+.sb-dot.on { background: var(--ok); box-shadow: 0 0 6px var(--ok), 0 0 14px rgba(46, 230, 166, 0.55); }
+.sidebar-cat { letter-spacing: 0.28em; color: rgba(167, 139, 250, 0.6); margin-top: 16px; }
+
+/* karty statystyk: świecąca linia u dołu i pulsująca kropka */
+.stat {
+    overflow: hidden;
+    background: linear-gradient(170deg, rgba(27, 29, 57, 0.65), rgba(15, 16, 36, 0.65));
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.stat::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--pink), var(--violet));
+    box-shadow: 0 0 10px var(--pink), 0 0 22px var(--pink-glow);
+}
+.stat::after {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transform: none;
+    box-shadow: 0 0 8px var(--pink);
+    animation: dot-glow 2.2s ease-in-out infinite;
+}
+@keyframes dot-glow {
+    0%, 100% { box-shadow: 0 0 4px var(--pink), 0 0 8px var(--pink-glow); opacity: 0.75; }
+    50% { box-shadow: 0 0 10px var(--pink), 0 0 20px var(--pink); opacity: 1; }
+}
+
+/* karty modułów */
+.mod-grid { gap: 14px; }
+.mod-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(12, 13, 29, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s, background 0.22s;
+}
+.mod-card.on {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(170deg, rgba(37, 39, 74, 0.7), rgba(21, 22, 45, 0.6));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+.mod-card.on::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: var(--ok);
+    box-shadow: 0 0 8px var(--ok), 0 0 20px rgba(46, 230, 166, 0.6);
+}
+.mod-card:not(.on) b, .mod-card:not(.on) .mod-ico { opacity: 0.7; }
+.mod-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 45, 135, 0.6);
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3), 0 0 24px rgba(255, 45, 135, 0.28);
+}
+.badge { border-radius: 999px; padding: 5px 10px; border: 1px solid transparent; }
+.badge.on {
+    background: rgba(46, 230, 166, 0.1);
+    border-color: rgba(46, 230, 166, 0.45);
+    color: #5bffc6;
+    text-shadow: 0 0 8px rgba(46, 230, 166, 0.8);
+    box-shadow: 0 0 12px rgba(46, 230, 166, 0.25);
+}
+.badge.off { background: transparent; border-color: rgba(255, 255, 255, 0.07); color: #4b4d74; }
+/* stara reguła .mod-card span:last-child (opis) łapała też plakietkę */
+.mod-card .badge { font-size: 11px; }
+.mod-card .badge.on { color: #5bffc6; }
+.mod-card .badge.off { color: #4b4d74; }

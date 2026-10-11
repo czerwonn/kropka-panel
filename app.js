@@ -718,7 +718,7 @@ function renderLanding(main) {
         h('section', { class: 'landing-section' }, h('div', { class: 'wrap offer' },
             h('div', { class: 'offer-card' },
                 h('span', { class: 'kicker' }, 'Dla adminów serwerów'),
-                h('h2', null, 'Wszystko w jednym ', h('span', { class: 'pink' }, 'panelu')),
+                h('h2', null, 'Wszystko w jednym ', h('span', { class: 'pink neon' }, 'panelu')),
                 h('p', null, 'Logujesz się przez Discorda i widzisz tylko serwery, którymi zarządzasz. Zmiany od razu trafiają do bota.'),
                 h('ul', { class: 'checklist' },
                     h('li', null, 'Kilkanaście modułów - każdy włączasz osobno'),
@@ -736,7 +736,7 @@ function renderLanding(main) {
                     h('h3', null, 'Dodaj Kropkę na swój serwer'),
                     h('p', null, 'Jedno kliknięcie, a potem wszystko ustawisz tutaj.')),
                 h('div', { class: 'spacer' }),
-                h('a', { class: 'btn btn-primary', ...invite }, '+ Dodaj bota')))),
+                h('a', { class: 'btn btn-gradient', ...invite }, '+ Dodaj bota')))),
     );
 }
 
