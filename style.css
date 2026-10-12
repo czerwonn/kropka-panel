@@ -1219,42 +1219,6 @@ body:has(#app.landing) .page-fx { display: none; }
     box-shadow: 0 0 6px var(--pink), 0 0 14px var(--pink-glow);
 }
 
-/* Rdzeń: kula z blaskiem, pulsuje i wysyła fale */
-.offer-art::before { border-color: rgba(255, 45, 135, 0.3); }
-.offer-dot {
-    position: relative;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 36% 30%, #fff 0, #ffc2dc 7%, #ff4f9b 26%, #ff2d87 42%, #9b1260 72%, #3d0727 100%);
-    box-shadow:
-        inset -14px -18px 34px rgba(30, 0, 20, 0.65),
-        inset 8px 10px 24px rgba(255, 255, 255, 0.18),
-        0 0 0 10px rgba(255, 45, 135, 0.12),
-        0 0 30px rgba(255, 45, 135, 0.9),
-        0 0 80px rgba(255, 45, 135, 0.55),
-        0 0 160px rgba(139, 92, 246, 0.45);
-    animation: core-pulse 2.6s ease-in-out infinite;
-}
-.offer-dot::before, .offer-dot::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 45, 135, 0.7);
-    box-shadow: 0 0 18px rgba(255, 45, 135, 0.6);
-    animation: core-wave 2.6s ease-out infinite;
-}
-.offer-dot::after { animation-delay: 1.3s; border-color: rgba(139, 92, 246, 0.7); box-shadow: 0 0 18px rgba(139, 92, 246, 0.6); }
-@keyframes core-pulse {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.05); filter: brightness(1.18); }
-}
-@keyframes core-wave {
-    from { transform: scale(1); opacity: 0.9; }
-    to { transform: scale(2.2); opacity: 0; }
-}
-
 /* Nagłówki sekcji: linia z miękkim blaskiem */
 .section-title::after, .title-bar::after {
     height: 3px;
@@ -1705,3 +1669,8 @@ body:has(#app.landing) .page-fx { display: none; }
 /* menu boczne: aktywna zakładka jeszcze mocniej świeci */
 .sidebar a.active { box-shadow: inset 0 0 0 1px rgba(255, 45, 135, 0.18), 0 0 18px -6px rgba(255, 45, 135, 0.5); }
 .sidebar a.active::before { width: 4px; box-shadow: 0 0 8px var(--pink), 0 0 18px var(--pink), 0 0 30px var(--pink-glow); }
+
+/* wąskie telefony: "Dodaj bota" jest i tak w treści strony */
+@media (max-width: 480px) {
+    .nav .nav-hide-sm { display: none; }
+}

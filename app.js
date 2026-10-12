@@ -766,6 +766,9 @@ function settingsForm(mod, guildId, ctx) {
 
 // ---------------------------------------------------------------- topbar
 
+// Serwer wsparcia bota
+const SUPPORT_URL = 'https://discord.gg/jnuM7PcSRx';
+
 function renderTopbar(active) {
     const right = h('div', { class: 'topbar-right' });
     const nav = h('nav', { class: 'nav' });
@@ -773,6 +776,7 @@ function renderTopbar(active) {
     if (state.me) {
         nav.append(h('a', { href: '#/', class: active === 'servers' ? 'active' : '' }, 'Serwery'));
         if (state.me.isOwner) nav.append(h('a', { href: '#/bot', class: active === 'bot' ? 'active' : '' }, 'Bot'));
+        nav.append(h('a', { href: SUPPORT_URL, target: '_blank', rel: 'noopener noreferrer' }, 'Wsparcie'));
 
         right.append(
             h('span', { class: 'pill ping', title: 'Opóźnienie bota' }, h('span', { class: 'dot' }), h('span', { class: 'ping-label' }, 'online'), `${state.me.bot.ping} ms`),
@@ -795,7 +799,8 @@ function renderTopbar(active) {
         nav.append(
             h('button', { class: 'active', 'data-section': 'start', onclick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) }, 'Start'),
             h('button', { 'data-section': 'funkcje', onclick: () => document.getElementById('funkcje')?.scrollIntoView({ behavior: 'smooth' }) }, 'Funkcje'),
-            h('a', { href: inviteUrl(), target: '_blank', rel: 'noopener noreferrer' }, 'Dodaj bota'));
+            h('a', { class: 'nav-hide-sm', href: inviteUrl(), target: '_blank', rel: 'noopener noreferrer' }, 'Dodaj bota'),
+            h('a', { href: SUPPORT_URL, target: '_blank', rel: 'noopener noreferrer' }, 'Wsparcie'));
         right.append(h('a', { class: 'login-chip', href: state.config.loginUrl }, discordIcon(), 'Zaloguj'));
     }
 
