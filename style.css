@@ -351,15 +351,24 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     bottom: 0;
     height: 90%;
     z-index: -2;
-    background:
-        linear-gradient(rgba(255, 45, 135, 0.6) 2px, transparent 2px) 0 0 / 70px 70px,
-        linear-gradient(90deg, rgba(255, 45, 135, 0.5) 2px, transparent 2px) 0 0 / 70px 70px;
     transform: perspective(700px) rotateX(62deg);
     transform-origin: 50% 100%;
     -webkit-mask-image: linear-gradient(to top, #000 30%, rgba(0, 0, 0, 0.6) 65%, transparent 95%);
     mask-image: linear-gradient(to top, #000 30%, rgba(0, 0, 0, 0.6) 65%, transparent 95%);
-    filter: drop-shadow(0 0 3px rgba(255, 45, 135, 0.8));
+}
+/* linie siatki (z miękką poświatą w samym gradiencie) - jadą przesunięciem, które liczy karta graficzna */
+.hero-grid::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -70px;
+    bottom: 0;
+    background:
+        linear-gradient(rgba(255, 45, 135, 0.7) 2px, rgba(255, 45, 135, 0.14) 2px 5px, transparent 5px) 0 0 / 70px 70px,
+        linear-gradient(90deg, rgba(255, 45, 135, 0.6) 2px, rgba(255, 45, 135, 0.12) 2px 5px, transparent 5px) 0 0 / 70px 70px;
     animation: grid-run 6s linear infinite;
+    will-change: transform;
 }
 /* łuna nad horyzontem siatki */
 .hero-grid::after {
@@ -452,8 +461,18 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
     flex-shrink: 0;
     border-radius: 50%;
     background: var(--pink);
+    position: relative;
     box-shadow: inset 0 0 0 0.1em #090a18, 0 0 0 0.04em var(--pink), 0 0 0.25em var(--pink-glow);
+}
+.hero-dot::after {
+    content: "";
+    position: absolute;
+    inset: -0.12em;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255, 45, 135, 0.55), rgba(255, 45, 135, 0.18) 60%, transparent);
     animation: dot-pulse 2.4s ease-in-out infinite;
+    will-change: transform, opacity;
 }
 .hero p { font-size: 17px; color: var(--text-2); max-width: 560px; margin: 26px auto 34px; }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
@@ -537,10 +556,10 @@ h1, h2, h3, h4 { margin: 0; line-height: 1.15; font-family: var(--display); font
 .mock-line.short { width: 60%; }
 
 @keyframes dot-pulse {
-    0%, 100% { box-shadow: inset 0 0 0 0.1em #090a18, 0 0 0 0.04em var(--pink), 0 0 0.2em var(--pink-glow), 0 0 0.5em rgba(255, 45, 135, 0.25); }
-    50% { box-shadow: inset 0 0 0 0.1em #090a18, 0 0 0 0.04em var(--pink), 0 0 0.45em var(--pink), 0 0 1.1em rgba(255, 45, 135, 0.55); }
+    0%, 100% { transform: scale(0.9); opacity: 0.35; }
+    50% { transform: scale(1.45); opacity: 1; }
 }
-@keyframes grid-run { to { background-position: 0 70px, 0 70px; } }
+@keyframes grid-run { to { transform: translateY(70px); } }
 @keyframes nebula-drift { to { transform: translate3d(2%, -2%, 0) scale(1.06); } }
 
 .landing-section { padding: 70px 0 10px; }
@@ -1673,4 +1692,12 @@ body:has(#app.landing) .page-fx { display: none; }
 /* wąskie telefony: "Dodaj bota" jest i tak w treści strony */
 @media (max-width: 480px) {
     .nav .nav-hide-sm { display: none; }
+}
+
+/* telefony: mniej ciężkich warstw - stała mgławica, bez rozmycia pod kartami i przyciskami */
+@media (max-width: 760px) {
+    .hero-nebula { animation: none; filter: blur(28px); }
+    .hero-beams { filter: blur(4px); }
+    .mock-card, .btn-glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .mock-card { background: linear-gradient(180deg, #1b1d39, #121329); }
 }
